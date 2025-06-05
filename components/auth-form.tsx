@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { PasswordStrengthMeter } from "@/components/password-strength-meter"
 
 interface AuthFormProps {
   type: "login" | "signup"
@@ -71,6 +72,9 @@ export default function AuthForm({ type }: AuthFormProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {type === "signup" && (
+              <PasswordStrengthMeter password={password} />
+            )}
           </div>
 
           {type === "login" && (
