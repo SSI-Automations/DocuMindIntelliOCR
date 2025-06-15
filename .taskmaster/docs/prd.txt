@@ -1,0 +1,303 @@
+# Product Requirements Document (PRD)
+
+## AI‑Powered Insurance Document Processing MVP
+
+### Version History
+
+| Version | Date | Author | Notes |
+|---------|------|--------|-------|
+| 0.1 (Draft) | 2025‑06‑14 | Jarvis | Initial draft for Sami's review |
+| 1.0 (Final) | 2025‑06‑14 | Claude | Improved version with Mistral OCR integration |
+
+---
+
+## 1. Executive Summary & Business Value Proposition
+
+### 1.1 Strategic Objective
+Deliver a production-ready MVP that demonstrates **99%+ accuracy** in insurance document processing while achieving **95% cost reduction** compared to enterprise OCR solutions. The MVP targets winning the MANELA contract by proving technical feasibility and establishing long-term partnership viability through demonstrable ROI.
+
+### 1.2 Business Impact Metrics
+- **Cost Efficiency**: $3.75-$7.50/month operational costs vs. $225-$22,500/month for enterprise alternatives
+- **Processing Speed**: Sub-30 second end-to-end document processing
+- **Accuracy Target**: ≥99% on Canadian insurance documents with bilingual support
+- **Contract Value**: Positioning for $50K-$200K annual engagement
+
+### 1.3 Competitive Differentiation
+- **Native Canadian Compliance**: Built-in English/French bilingual processing
+- **Modern Stack**: Next.js 14 + Supabase + Mistral OCR for enterprise scalability
+- **Cost Leadership**: 95% cost advantage over Google Document AI/AWS Textract
+- **Rapid Development**: v0-generated UI components for accelerated delivery
+
+---
+
+## 2. Technical Architecture & Stack Decision Rationale
+
+### 2.1 Technology Stack (Finalized)
+
+#### Frontend Development
+- **UI Generation**: v0 (Vercel) for rapid, consistent component creation
+- **Framework**: Next.js 14 (App Router) with TypeScript
+- **Styling**: Tailwind CSS + Radix UI components
+- **State Management**: React Server Components + Zustand for client state
+
+#### Backend Infrastructure
+- **Database**: Supabase PostgreSQL with Row Level Security (RLS)
+- **Authentication**: Supabase Auth with role-based access control
+- **Storage**: Supabase Storage with encrypted document storage
+- **Deployment**: Vercel (seamless Next.js integration)
+
+#### AI/OCR Processing Engine
+- **Primary OCR**: Mistral OCR API (99%+ accuracy, $1/1000 pages)
+- **Processing Capacity**: 2,000 pages/minute, 50MB file support
+- **Language Support**: Native English/French bilingual processing
+- **Output Format**: Structured JSON with confidence scoring
+
+### 2.2 Architecture Decision Record (ADR)
+
+#### Why Mistral OCR Over Alternatives?
+1. **Cost Efficiency**: 30-40x cheaper than Google Document AI
+2. **Canadian Compliance**: Native bilingual support without language-specific pipelines
+3. **Technical Superiority**: Structured JSON output, confidence scoring, metadata extraction
+4. **Integration Simplicity**: RESTful API with Next.js compatibility
+5. **Security Options**: Self-hosting capability for data sovereignty requirements
+
+#### Why v0 for UI Development?
+1. **Velocity**: 3-5x faster component generation vs. manual development
+2. **Consistency**: Standardized Tailwind + Radix UI patterns
+3. **Quality**: Production-ready accessibility and responsive design
+4. **Maintenance**: Reduced technical debt through consistent patterns
+
+---
+
+## 3. Functional Requirements (Precision-Defined)
+
+### 3.1 Document Processing Pipeline
+
+| ID | Requirement | Business Value | Technical Specification | Priority |
+|----|-------------|----------------|------------------------|----------|
+| FR-1 | Secure File Upload | Risk mitigation for PII | Drag-and-drop with 50MB limit, encrypted storage | Must |
+| FR-2 | Mistral OCR Integration | 99%+ accuracy target | RESTful API integration with structured JSON output | Must |
+| FR-3 | Real-time Progress Tracking | User experience optimization | WebSocket/SSE for live processing status | Must |
+| FR-4 | Bilingual Document Support | Canadian market compliance | English/French automatic detection and processing | Must |
+| FR-5 | Structured Data Extraction | Business logic automation | Insurance-specific field extraction with confidence scores | Must |
+| FR-6 | Provincial Rule Engine | Regulatory compliance | Quebec & Ontario parental leave rule application | Must |
+| FR-7 | Role-Based Access Control | Enterprise security | Employee/HR Manager/Admin role segregation via RLS | Must |
+| FR-8 | Policy Document Generation | Client deliverable automation | Markdown to HTML/PDF generation with provincial templates | Should |
+| FR-9 | Audit Trail & Logging | Compliance and debugging | Complete processing history with user actions | Should |
+| FR-10 | Mobile-Responsive Interface | User accessibility | Touch-optimized upload and document review | Could |
+
+### 3.2 User Journey Specifications
+
+#### Employee Portal Journey
+1. **Authentication**: Supabase Auth login with role verification
+2. **Document Upload**: v0-generated drag-and-drop component with real-time validation
+3. **Processing Monitoring**: Live progress updates via Mistral OCR webhook
+4. **Data Verification**: Read-only extracted data review with confidence indicators
+5. **Policy Preview**: Generated parental leave policy document display
+
+#### HR Manager Dashboard Journey
+1. **Employee Profile Creation**: Multi-step wizard with validation
+2. **Document Association**: Upload or link existing processed documents
+3. **Policy Generation**: Provincial rule application with custom parameters
+4. **Export Functionality**: PDF generation and secure sharing capabilities
+
+---
+
+## 4. Non-Functional Requirements (Performance & Security)
+
+### 4.1 Performance Specifications
+- **Latency**: <30 seconds total processing time (upload → policy generation)
+- **Throughput**: Support 100 concurrent users with 99.9% uptime
+- **File Processing**: Handle 90% of documents under 10MB, support up to 50MB
+- **API Response**: Mistral OCR integration under 15 seconds for typical documents
+
+### 4.2 Security & Compliance Framework
+- **Data Encryption**: AES-256 at rest, TLS 1.3 in transit
+- **Access Control**: Supabase RLS with granular permission matrices
+- **Audit Logging**: Complete user action and data access tracking
+- **PII Protection**: Automatic data classification and retention policies
+- **Canadian Privacy**: PIPEDA compliance preparation with data sovereignty options
+
+### 4.3 Scalability Architecture
+- **Database**: Supabase connection pooling with read replicas
+- **Storage**: CDN-enabled document delivery with regional optimization
+- **Processing**: Async queue system for batch OCR processing
+- **Monitoring**: Real-time performance dashboards and alerting
+
+---
+
+## 5. Data Model (Insurance-Optimized)
+
+```sql
+-- Core Tables with RLS
+CREATE TABLE employees (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  name TEXT NOT NULL,
+  role TEXT NOT NULL,
+  salary NUMERIC(10,2),
+  due_date DATE,
+  province TEXT CHECK (province IN ('QC', 'ON')),
+  benefits JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE document_uploads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  employee_id UUID REFERENCES employees(id),
+  file_path TEXT NOT NULL,
+  file_size INTEGER,
+  mime_type TEXT,
+  processing_status TEXT CHECK (processing_status IN ('uploaded', 'processing', 'completed', 'failed')),
+  mistral_job_id TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE extracted_insurance_data (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  document_id UUID REFERENCES document_uploads(id),
+  insurer_name TEXT,
+  policy_number TEXT,
+  coverage_amount NUMERIC(12,2),
+  effective_date DATE,
+  expiry_date DATE,
+  confidence_score NUMERIC(3,2),
+  raw_mistral_output JSONB,
+  extraction_metadata JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE generated_policies (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  employee_id UUID REFERENCES employees(id),
+  document_id UUID REFERENCES document_uploads(id),
+  province TEXT NOT NULL,
+  policy_content TEXT,
+  generation_parameters JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Row Level Security Policies
+ALTER TABLE employees ENABLE ROW LEVEL SECURITY;
+ALTER TABLE document_uploads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE extracted_insurance_data ENABLE ROW LEVEL SECURITY;
+ALTER TABLE generated_policies ENABLE ROW LEVEL SECURITY;
+
+-- Employee access policies
+CREATE POLICY "employees_own_access" ON employees
+  FOR ALL USING (auth.uid() = user_id);
+
+-- Document access policies  
+CREATE POLICY "documents_employee_access" ON document_uploads
+  FOR ALL USING (
+    employee_id IN (
+      SELECT id FROM employees WHERE user_id = auth.uid()
+    )
+  );
+```
+
+---
+
+## 6. Implementation Timeline (Risk-Adjusted)
+
+### Phase 1: Foundation (4 days)
+- **Day 1-2**: v0 UI component generation and Supabase schema setup
+- **Day 3-4**: Mistral OCR service integration and basic upload flow
+
+**Deliverables**: Working upload → OCR → display pipeline
+
+### Phase 2: Core Processing (5 days)
+- **Day 5-7**: Employee portal with authentication and document processing
+- **Day 8-9**: HR dashboard MVP with policy generation
+**Deliverables**: End-to-end employee and HR workflows
+
+### Phase 3: Business Logic (4 days)
+- **Day 10-11**: Provincial rule engine implementation
+- **Day 12-13**: Data validation and error handling
+**Deliverables**: Production-ready business logic
+
+### Phase 4: Polish & Production (3 days)
+- **Day 14-15**: Security hardening, performance optimization
+- **Day 16**: Demo preparation and documentation
+**Deliverables**: Client-ready demonstration
+
+**Total Timeline**: 16 development days (3.5 weeks) - 20% buffer added for risk mitigation
+
+---
+
+## 7. Success Metrics & Acceptance Criteria
+
+### 7.1 Technical Acceptance Criteria
+- [ ] Document upload succeeds with progress indication
+- [ ] Mistral OCR processes documents with >95% field extraction accuracy
+- [ ] Provincial policy generation includes correct leave duration calculations
+- [ ] All user interfaces render properly on mobile and desktop
+- [ ] Authentication and authorization work correctly for all user roles
+- [ ] Processing completes within 30-second SLA for typical documents
+
+### 7.2 Business Success Metrics
+- [ ] Client approves technical demonstration quality
+- [ ] Processing cost remains under $10/month for 1000 documents
+- [ ] Zero security vulnerabilities in penetration testing
+- [ ] 90%+ user satisfaction in usability testing
+- [ ] Documentation enables independent client operation
+
+### 7.3 MVP Demo Requirements
+- [ ] Live demonstration of complete employee workflow
+- [ ] HR manager dashboard with policy generation
+- [ ] Real document processing (not mock data)
+- [ ] Performance under load simulation
+- [ ] Security and compliance overview presentation
+
+---
+
+## 8. Risk Assessment & Mitigation Strategies
+
+### 8.1 Technical Risks
+
+| Risk | Probability | Impact | Mitigation Strategy |
+|------|-------------|---------|-------------------|
+| Mistral OCR accuracy below target | Medium | High | Implement confidence thresholds and manual review fallback |
+| v0 component limitations | Low | Medium | Maintain custom component library as backup |
+| Supabase performance issues | Low | High | Implement database optimization and monitoring |
+| Timeline compression | High | Medium | Prioritize MVP features, defer advanced functionality |
+
+### 8.2 Business Risks
+
+| Risk | Probability | Impact | Mitigation Strategy |
+|------|-------------|---------|-------------------|
+| Client requirement changes | Medium | High | Maintain detailed change request process |
+| Competitive solution emergence | Low | Medium | Focus on unique Canadian compliance features |
+| Scaling cost projections | Medium | Medium | Implement cost monitoring and alerting |
+
+---
+
+## 9. Post-MVP Roadmap & Scaling Strategy
+
+### 9.1 Phase 2 Enhancements (Month 2-3)
+- Advanced analytics dashboard
+- Batch processing capabilities
+- Multi-tenant architecture
+- API for third-party integrations
+
+### 9.2 Enterprise Features (Month 4-6)
+- White-label customization
+- Advanced workflow automation
+- Integration with HR systems (Workday, BambooHR)
+- Compliance reporting and audit tools
+
+### 9.3 Market Expansion (Month 6+)
+- Additional provincial support (BC, AB, etc.)
+- Other document types (T4s, employment contracts)
+- AI-powered policy recommendations
+- Predictive analytics for leave planning
+
+---
+
+## 10. Open Questions for Client Alignment
+
+1. **Sample Documents**: Can MANELA provide 10-15 representative insurance documents for testing and training?
+2. **Branding Guidelines**: What are the specific color palette, logo, and brand requirements?
+3. **Compliance Requirements**: Are there specific PIPEDA or provincial privacy requirements beyond standard practices?
+4. **Integration Scope**: What existing systems need integration consideration for Phase 2?
+5. **User Volume**: What are realistic user volumes for cost modeling and scaling?

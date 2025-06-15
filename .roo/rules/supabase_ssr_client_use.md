@@ -1,0 +1,514 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Health Coach AI - Supabase SSR Roo Code Rules
+
+## Project Overview
+You are working on Health Coach AI using Next.js 14+ with Supabase as the backend service. This project is configured to use Server-Side Rendering (SSR) with Supabase, and our setup in `lib/supabase/` is specifically designed to handle authentication and session management correctly across different rendering environments.
+
+## CRITICAL: Supabase Client Usage Rules
+
+**MUST use the `@supabase/ssr` helper clients for all interactions.**
+
+### Core Supabase Principles
+- **NEVER import from `@supabase/supabase-js` directly**
+- **NEVER install `@supabase/supabase-js`** - The `@supabase/ssr` package already includes it as a dependency
+- **ALWAYS use one of the three pre-configured clients from `lib/supabase/`**
+- **NEVER use database functions or triggers** - use Server-Side Rendering (SSR) with Supabase client
+- **ALWAYS use Server Actions** for form processing and mutations
+- **ALWAYS use middleware** for route protection and session management
+
+### Supabase Client Types & Usage
+
+#### 1. Client Components (`lib/supabase/client.ts`)
+For any component marked with `'use client'`, you **MUST** use the browser client:
+
+```typescript
+// ✅ DO: Use the browser client in Client Components
+import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+
+export default function MyComponent() {
+  const supabase = createClient();
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await supabase.from("your_table").select();
+      setData(data);
+    };
+    fetchData();
+  }, []);
+
+  return <div>{/* Component JSX */}</div>;
+}
+```
+
+#### 2. Server Components, Server Actions, Route Handlers (`lib/supabase/server.ts`)
+For any server-side code, you **MUST** use the server client:
+
+```typescript
+// ✅ DO: Use the server client in Server Actions or Server Components
+import { createClient } from "@/lib/supabase/server";
+
+export async function myServerAction(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login?message=Authentication required");
+  }
+  
+  // Perform database operations
+  const { data, error } = await supabase
+    .from("your_table")
+    .insert({ /* data */ });
+    
+  if (error) {
+    redirect("/error?message=" + error.message);
+  }
+  
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
+}
+```
+
+#### 3. Middleware (`lib/supabase/middleware.ts`)
+Our middleware uses the middleware-specific client for session management:
+
+```typescript
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+
+export async function updateSession(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value),
+          );
+          supabaseResponse = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options),
+          );
+        },
+      },
+    },
+  );
+
+  // CRITICAL: Always call getUser() for session management
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Route protection logic
+  const { pathname } = request.nextUrl;
+  const protectedRoutes = ["/dashboard"];
+
+  if (!user && protectedRoutes.some(p => pathname.startsWith(p))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // CRITICAL: Always return supabaseResponse
+  return supabaseResponse;
+}
+```
+
+### Supabase Anti-Patterns
+❌ **DON'T**: Import or install the standard JS client directly
+```typescript
+// ❌ This will break session management in SSR environment
+import { createClient } from "@supabase/supabase-js";
+```
+
+❌ **DON'T**: Create new Supabase client instances manually
+```typescript
+// ❌ Always use the helpers instead
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+```
+
+## Supabase Authentication Patterns
+
+### Server Actions for Authentication
+```typescript
+"use server";
+
+import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+export async function signup(formData: FormData) {
+  const supabase = await createClient();
+  
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  // Step 1: Create auth user
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { role: "coach" } }
+  });
+
+  if (authError) {
+    console.error("Signup Error:", authError);
+    return redirect("/login?message=Could not create account.");
+  }
+
+  const userId = authData.user?.id;
+  if (!userId) {
+    return redirect("/login?message=Account creation failed.");
+  }
+
+  // Step 2: Create profile record
+  const { error: profileError } = await supabase.from("profiles").insert({
+    id: userId,
+    email,
+    role: "coach",
+  });
+
+  if (profileError) {
+    console.error("Profile creation error:", profileError);
+    // Cleanup: Remove auth user
+    await supabase.auth.admin.deleteUser(userId);
+    return redirect("/login?message=Account setup failed.");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function login(formData: FormData) {
+  const supabase = await createClient();
+
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    return redirect("/login?message=Could not authenticate user");
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard");
+}
+
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
+}
+```
+
+### Client Components for Real-time Data
+```typescript
+"use client";
+
+import { createClient } from "@/lib/supabase/client";
+import { useEffect, useState } from "react";
+
+export function ClientDataComponent() {
+  const supabase = createClient();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: fetchedData, error } = await supabase
+        .from("your_table")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching data:", error);
+        return;
+      }
+
+      setData(fetchedData);
+      setLoading(false);
+    };
+
+    fetchData();
+
+    // Set up real-time subscription
+    const subscription = supabase
+      .channel("your_table_changes")
+      .on("postgres_changes", 
+        { event: "*", schema: "public", table: "your_table" },
+        (payload) => {
+          console.log("Real-time update:", payload);
+          fetchData(); // Refetch data on changes
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  if (loading) return <div>Loading...</div>;
+
+  return <div>{/* Render data */}</div>;
+}
+```
+
+### Server Components for Initial Data Loading
+```typescript
+import { createClient } from "@/lib/supabase/server";
+
+export default async function ServerDataComponent() {
+  const supabase = await createClient();
+  
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data, error } = await supabase
+    .from("your_table")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Database error:", error);
+    return <div>Error loading data</div>;
+  }
+
+  return (
+    <div>
+      {data?.map((item) => (
+        <div key={item.id}>{/* Render item */}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Database Operations with Supabase
+
+### Create Operations
+```typescript
+// Server Action
+export async function createRecord(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data, error } = await supabase
+    .from("your_table")
+    .insert({
+      user_id: user.id,
+      name: formData.get("name") as string,
+      // other fields
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Insert error:", error);
+    redirect("/error?message=" + error.message);
+  }
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
+}
+```
+
+### Update Operations
+```typescript
+export async function updateRecord(id: string, formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data, error } = await supabase
+    .from("your_table")
+    .update({
+      name: formData.get("name") as string,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id)
+    .eq("user_id", user.id) // Security: ensure user owns the record
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Update error:", error);
+    redirect("/error?message=" + error.message);
+  }
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
+}
+```
+
+### Delete Operations
+```typescript
+export async function deleteRecord(id: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { error } = await supabase
+    .from("your_table")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.id); // Security: ensure user owns the record
+
+  if (error) {
+    console.error("Delete error:", error);
+    redirect("/error?message=" + error.message);
+  }
+
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
+}
+```
+
+## Error Handling with Supabase
+
+### Server Actions Error Handling
+```typescript
+import { createClient } from "@/lib/supabase/server";
+
+export async function actionWithErrorHandling(formData: FormData) {
+  const supabase = await createClient();
+  let createdRecordId: string | null = null;
+  
+  try {
+    // Step 1: Create primary record
+    const { data: primaryData, error: primaryError } = await supabase
+      .from("primary_table")
+      .insert({ /* data */ })
+      .select()
+      .single();
+
+    if (primaryError) throw new Error(primaryError.message);
+    createdRecordId = primaryData.id;
+
+    // Step 2: Create related record
+    const { error: relatedError } = await supabase
+      .from("related_table")
+      .insert({ 
+        primary_id: createdRecordId,
+        /* other data */
+      });
+
+    if (relatedError) {
+      // Cleanup: Remove primary record
+      await supabase
+        .from("primary_table")
+        .delete()
+        .eq("id", createdRecordId);
+      
+      throw new Error(relatedError.message);
+    }
+
+    revalidatePath("/dashboard");
+    redirect("/dashboard");
+    
+  } catch (error) {
+    console.error("Action error:", error);
+    redirect("/error?message=" + (error as Error).message);
+  }
+}
+```
+
+## Row Level Security (RLS) Best Practices
+
+### Enable RLS on Tables
+```sql
+-- Always enable RLS
+ALTER TABLE your_table ENABLE ROW LEVEL SECURITY;
+
+-- Example policy for user-owned records
+CREATE POLICY "Users can only access their own records" ON your_table
+  FOR ALL USING (auth.uid() = user_id);
+
+-- Example policy for public read access
+CREATE POLICY "Anyone can read public records" ON your_table
+  FOR SELECT USING (is_public = true);
+```
+
+### Supabase Client Usage with RLS
+```typescript
+// RLS policies are automatically enforced
+const { data, error } = await supabase
+  .from("your_table")
+  .select("*"); // Only returns records the user has access to
+
+// No need for additional WHERE clauses for user_id when RLS is properly configured
+```
+
+## File Structure for Supabase Integration
+```
+lib/
+├── supabase/
+│   ├── client.ts           # Browser client - use in Client Components
+│   ├── server.ts           # SSR client - use in Server Actions/Components
+│   └── middleware.ts       # Middleware client - use in middleware only
+app/
+├── auth/
+│   └── actions.ts          # Authentication server actions
+├── api/
+│   └── webhooks/           # API routes for webhooks (if needed)
+└── (dashboard)/            # Protected routes
+```
+
+## Critical Supabase Don'ts
+
+❌ **NEVER import from `@supabase/supabase-js` directly**
+❌ **NEVER create manual Supabase client instances**
+❌ **NEVER use database functions or triggers instead of Server Actions**
+❌ **NEVER skip authentication checks in Server Actions**
+❌ **NEVER forget to implement proper RLS policies**
+❌ **NEVER expose the service role key on the client**
+❌ **NEVER skip error handling in database operations**
+❌ **NEVER forget to cleanup on operation failures**
+❌ **NEVER bypass RLS with the service role key in user-facing operations**
+❌ **NEVER forget to return the supabaseResponse in middleware**
+
+## Supabase Environment Variables
+```bash
+# Required for all Supabase operations
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Only for admin operations (never expose on client)
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+## When in Doubt with Supabase
+1. **Always use the correct SSR client** for your environment (client, server, or middleware)
+2. **Always implement proper authentication checks** in Server Actions
+3. **Always use RLS policies** instead of manual access control
+4. **Always handle Supabase errors** gracefully with user-friendly messages
+5. **Always cleanup on failures** to maintain data integrity
+6. **Always use the pre-configured clients** from `lib/supabase/`
+7. **Always validate user permissions** before database operations
