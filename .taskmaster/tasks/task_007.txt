@@ -1,0 +1,11 @@
+# Task ID: 7
+# Title: Enhance Results Display with OCR Data
+# Status: pending
+# Dependencies: 5
+# Priority: medium
+# Description: Connect existing results display component with real OCR data from database
+# Details:
+Modify existing results display component: 1) Create API endpoint /api/results/[documentId] to fetch OCR results, 2) Replace mock data with real extracted text from database, 3) Display confidence scores with visual indicators (color-coded), 4) Show processing metadata (time taken, pages processed, language detected), 5) Implement text search and highlight functionality within results, 6) Add copy-to-clipboard with success feedback, 7) Display original document metadata (filename, size, upload date).
+
+# Test Strategy:
+Test results display with various OCR outputs. Verify confidence score visualization. Test search and highlight functionality. Validate copy-to-clipboard works across browsers. Test with documents of different languages and quality.

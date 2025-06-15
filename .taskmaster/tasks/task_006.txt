@@ -1,0 +1,11 @@
+# Task ID: 6
+# Title: Create Real-time Processing Status Updates
+# Status: pending
+# Dependencies: 5
+# Priority: medium
+# Description: Implement real-time status updates during OCR processing using polling or WebSocket connections
+# Details:
+1) Create API endpoint /api/status/[documentId] to check processing status, 2) Implement client-side polling mechanism (every 2 seconds) to check processing status, 3) Update UI with processing progress indicators and estimated completion time, 4) Add WebSocket support as enhancement for real-time updates, 5) Handle processing failures with clear error messages, 6) Implement automatic redirect to results page on completion, 7) Add processing cancellation capability.
+
+# Test Strategy:
+Test status polling during document processing. Verify UI updates correctly show processing states. Test error handling for failed processing. Validate automatic navigation to results on completion.

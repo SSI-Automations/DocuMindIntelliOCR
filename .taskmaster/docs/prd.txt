@@ -1,303 +1,471 @@
-# Product Requirements Document (PRD)
+I'll help you create a comprehensive PRD by first examining your project knowledge and codebase. Let me gather information about your product.Let me now examine your GitHub repository to understand the current implementation status.Let me examine the repository structure and implementation details:Let me examine the repository structure to understand the current implementation:Let me explore the project structure to understand what has been implemented:Let me examine the components structure to understand what's been implemented:Let me search for more information about the technical implementation status:Let me search for information about pending features and the roadmap:Based on my analysis of your project knowledge and GitHub repository, I'll create a comprehensive Product Requirements Document for DocuMind IntelliOCR.
 
-## AI‑Powered Insurance Document Processing MVP
+# DocuMind IntelliOCR - Product Requirements Document
 
-### Version History
+# Overview  
+DocuMind IntelliOCR is a generic OCR document processing application designed for **B2B software sales** rather than SaaS. Companies purchase the base application and receive customization services for their specific industry needs. The product solves the critical problem of manual document processing by providing accurate, fast OCR capabilities with a professional interface that can be tailored to any business vertical.
 
-| Version | Date | Author | Notes |
-|---------|------|--------|-------|
-| 0.1 (Draft) | 2025‑06‑14 | Jarvis | Initial draft for Sami's review |
-| 1.0 (Final) | 2025‑06‑14 | Claude | Improved version with Mistral OCR integration |
+**Problem Solved**: Manual document digitization is time-consuming, error-prone, and expensive for businesses across all industries. Current enterprise OCR solutions are prohibitively expensive and lock companies into ongoing subscription costs.
 
----
+**Target Market**: Mid-to-large enterprises needing document processing solutions across insurance, legal, healthcare, accounting, logistics, and other document-heavy industries.
 
-## 1. Executive Summary & Business Value Proposition
+**Value Proposition**:
+- Own the software outright with no ongoing API costs
+- 99%+ OCR accuracy using Mistral AI at just $1/1000 pages
+- 95% cost reduction vs enterprise solutions ($3.75/month vs $225-$22,500/month)
+- Ready-to-customize foundation for industry-specific needs
+- Professional enterprise-ready UI built with modern technologies
 
-### 1.1 Strategic Objective
-Deliver a production-ready MVP that demonstrates **99%+ accuracy** in insurance document processing while achieving **95% cost reduction** compared to enterprise OCR solutions. The MVP targets winning the MANELA contract by proving technical feasibility and establishing long-term partnership viability through demonstrable ROI.
+**Business Model**: License sales ($10K-$25K) + customization services ($50K-$200K) + annual support contracts ($5K-$15K)
 
-### 1.2 Business Impact Metrics
-- **Cost Efficiency**: $3.75-$7.50/month operational costs vs. $225-$22,500/month for enterprise alternatives
-- **Processing Speed**: Sub-30 second end-to-end document processing
-- **Accuracy Target**: ≥99% on Canadian insurance documents with bilingual support
-- **Contract Value**: Positioning for $50K-$200K annual engagement
+# Core Features  
 
-### 1.3 Competitive Differentiation
-- **Native Canadian Compliance**: Built-in English/French bilingual processing
-- **Modern Stack**: Next.js 14 + Supabase + Mistral OCR for enterprise scalability
-- **Cost Leadership**: 95% cost advantage over Google Document AI/AWS Textract
-- **Rapid Development**: v0-generated UI components for accelerated delivery
+## 1. Document Upload & Storage
+**What it does**: Secure drag-and-drop file upload with automatic cloud storage and user isolation
 
----
+**Why it's important**: Foundation for all document processing, ensures data security and regulatory compliance
 
-## 2. Technical Architecture & Stack Decision Rationale
+**How it works**: React Dropzone component uploads files to Supabase Storage with user-based folder organization, automatic database record creation, and real-time progress tracking
 
-### 2.1 Technology Stack (Finalized)
+**Current Status**: ✅ Implemented with mock processing
 
-#### Frontend Development
-- **UI Generation**: v0 (Vercel) for rapid, consistent component creation
-- **Framework**: Next.js 14 (App Router) with TypeScript
-- **Styling**: Tailwind CSS + Radix UI components
+## 2. Mistral OCR Processing
+**What it does**: High-accuracy text extraction from PDFs and images using Mistral AI's advanced OCR API
+
+**Why it's important**: Core value proposition - delivers accurate, fast, and cost-effective OCR at enterprise scale
+
+**How it works**: Server-side API integration with Mistral OCR, asynchronous processing with real-time status updates, confidence scoring, and multi-language support
+
+**Current Status**: ⏳ Pending implementation (documented in ai-docs/add-mistral-ocr.md)
+
+## 3. Results Display & Management
+**What it does**: Clean presentation of extracted text with metadata, confidence scores, and search capabilities
+
+**Why it's important**: Professional interface builds client confidence and enables quality assessment
+
+**How it works**: Structured display with search/highlight functionality, processing details, confidence indicators, and responsive design
+
+**Current Status**: ✅ UI implemented with sample data, needs OCR integration
+
+## 4. Export & Download Functionality
+**What it does**: Export extracted text as TXT or structured data as JSON with full metadata
+
+**Why it's important**: Enables seamless integration with client workflows and existing systems
+
+**How it works**: Client-side file generation, automatic download tracking, copy-to-clipboard functionality with user feedback
+
+**Current Status**: ⏳ Pending implementation
+
+## 5. Processing History & Document Management
+**What it does**: Complete audit trail of all processed documents with re-access capabilities
+
+**Why it's important**: Enterprise requirement for compliance and workflow management
+
+**How it works**: Database-driven history with filtering, search, bulk operations, and re-download capabilities
+
+**Current Status**: ⏳ Pending implementation
+
+## 6. User Authentication & Security
+**What it does**: Secure user accounts with data isolation and enterprise-grade session management
+
+**Why it's important**: Essential for multi-user support and enterprise security requirements
+
+**How it works**: Supabase Auth with Row Level Security, encrypted storage, secure file access via signed URLs
+
+**Current Status**: ✅ Basic auth UI implemented, ⏳ Supabase integration documented (SUPABASE_SETUP.md)
+
+# User Experience  
+
+## User Personas
+**Primary**: Business users who process documents regularly
+- Insurance claims processors
+- Legal assistants and paralegals
+- Accounting clerks
+- HR document managers
+
+**Secondary**: IT administrators responsible for deployment and management
+- System configuration
+- User management
+- Security compliance
+
+**Tertiary**: Decision makers evaluating during sales process
+- Department heads
+- IT directors
+- Procurement teams
+
+## Key User Flows
+
+### Primary Flow: Document Processing
+1. **Upload** → Drag & drop document → Auto-save to secure storage → Database record created
+2. **Process** → Automatic OCR analysis → Real-time progress updates → Results stored
+3. **Review** → Display extracted text → Show confidence scores → Present metadata
+4. **Export** → Download as TXT/JSON → Copy to clipboard → Track download history
+5. **Manage** → View processing history → Re-access past results → Delete when needed
+
+### Administrative Flow: User Management
+1. **Setup** → Create user accounts → Configure permissions → Set storage limits
+2. **Monitor** → View processing statistics → Track usage → Generate reports
+3. **Maintain** → Manage user access → Archive old documents → System updates
+
+## UI/UX Considerations
+- **Professional Design**: Clean, modern interface using shadcn/ui (55+ accessible components) with Tailwind CSS
+- **Mobile Responsive**: Touch-optimized for tablets and mobile devices used in field operations
+- **Accessibility**: WCAG 2.1 AA compliance for inclusive design
+- **Dark Theme**: Professional appearance optimized for extended use
+- **Progress Feedback**: Clear status indicators during upload and processing
+- **Error Handling**: Graceful failure states with actionable user guidance
+
+# Technical Architecture  
+
+## System Components
+
+### Frontend Layer
+- **Framework**: Next.js 15.2.4 with App Router and TypeScript
+- **UI Library**: shadcn/ui with Tailwind CSS
 - **State Management**: React Server Components + Zustand for client state
+- **File Upload**: React Dropzone with progress tracking and validation
+- **Form Handling**: React Hook Form with Zod validation
 
-#### Backend Infrastructure
+### Backend Infrastructure
 - **Database**: Supabase PostgreSQL with Row Level Security (RLS)
 - **Authentication**: Supabase Auth with role-based access control
-- **Storage**: Supabase Storage with encrypted document storage
-- **Deployment**: Vercel (seamless Next.js integration)
+- **File Storage**: Supabase Storage with encrypted document storage
+- **API Layer**: Next.js API Routes for business logic orchestration
 
-#### AI/OCR Processing Engine
-- **Primary OCR**: Mistral OCR API (99%+ accuracy, $1/1000 pages)
+### AI Processing Engine
+- **OCR Service**: Mistral OCR API (99%+ accuracy, $1/1000 pages)
 - **Processing Capacity**: 2,000 pages/minute, 50MB file support
 - **Language Support**: Native English/French bilingual processing
-- **Output Format**: Structured JSON with confidence scoring
+- **Output Format**: Structured JSON with confidence scoring and metadata
 
-### 2.2 Architecture Decision Record (ADR)
+### Deployment & Infrastructure
+- **Hosting**: Vercel for seamless Next.js deployment
+- **CDN**: Automatic global distribution for file access
+- **Monitoring**: Built-in analytics and error tracking
+- **Scaling**: Serverless architecture with automatic scaling
 
-#### Why Mistral OCR Over Alternatives?
-1. **Cost Efficiency**: 30-40x cheaper than Google Document AI
-2. **Canadian Compliance**: Native bilingual support without language-specific pipelines
-3. **Technical Superiority**: Structured JSON output, confidence scoring, metadata extraction
-4. **Integration Simplicity**: RESTful API with Next.js compatibility
-5. **Security Options**: Self-hosting capability for data sovereignty requirements
-
-#### Why v0 for UI Development?
-1. **Velocity**: 3-5x faster component generation vs. manual development
-2. **Consistency**: Standardized Tailwind + Radix UI patterns
-3. **Quality**: Production-ready accessibility and responsive design
-4. **Maintenance**: Reduced technical debt through consistent patterns
-
----
-
-## 3. Functional Requirements (Precision-Defined)
-
-### 3.1 Document Processing Pipeline
-
-| ID | Requirement | Business Value | Technical Specification | Priority |
-|----|-------------|----------------|------------------------|----------|
-| FR-1 | Secure File Upload | Risk mitigation for PII | Drag-and-drop with 50MB limit, encrypted storage | Must |
-| FR-2 | Mistral OCR Integration | 99%+ accuracy target | RESTful API integration with structured JSON output | Must |
-| FR-3 | Real-time Progress Tracking | User experience optimization | WebSocket/SSE for live processing status | Must |
-| FR-4 | Bilingual Document Support | Canadian market compliance | English/French automatic detection and processing | Must |
-| FR-5 | Structured Data Extraction | Business logic automation | Insurance-specific field extraction with confidence scores | Must |
-| FR-6 | Provincial Rule Engine | Regulatory compliance | Quebec & Ontario parental leave rule application | Must |
-| FR-7 | Role-Based Access Control | Enterprise security | Employee/HR Manager/Admin role segregation via RLS | Must |
-| FR-8 | Policy Document Generation | Client deliverable automation | Markdown to HTML/PDF generation with provincial templates | Should |
-| FR-9 | Audit Trail & Logging | Compliance and debugging | Complete processing history with user actions | Should |
-| FR-10 | Mobile-Responsive Interface | User accessibility | Touch-optimized upload and document review | Could |
-
-### 3.2 User Journey Specifications
-
-#### Employee Portal Journey
-1. **Authentication**: Supabase Auth login with role verification
-2. **Document Upload**: v0-generated drag-and-drop component with real-time validation
-3. **Processing Monitoring**: Live progress updates via Mistral OCR webhook
-4. **Data Verification**: Read-only extracted data review with confidence indicators
-5. **Policy Preview**: Generated parental leave policy document display
-
-#### HR Manager Dashboard Journey
-1. **Employee Profile Creation**: Multi-step wizard with validation
-2. **Document Association**: Upload or link existing processed documents
-3. **Policy Generation**: Provincial rule application with custom parameters
-4. **Export Functionality**: PDF generation and secure sharing capabilities
-
----
-
-## 4. Non-Functional Requirements (Performance & Security)
-
-### 4.1 Performance Specifications
-- **Latency**: <30 seconds total processing time (upload → policy generation)
-- **Throughput**: Support 100 concurrent users with 99.9% uptime
-- **File Processing**: Handle 90% of documents under 10MB, support up to 50MB
-- **API Response**: Mistral OCR integration under 15 seconds for typical documents
-
-### 4.2 Security & Compliance Framework
-- **Data Encryption**: AES-256 at rest, TLS 1.3 in transit
-- **Access Control**: Supabase RLS with granular permission matrices
-- **Audit Logging**: Complete user action and data access tracking
-- **PII Protection**: Automatic data classification and retention policies
-- **Canadian Privacy**: PIPEDA compliance preparation with data sovereignty options
-
-### 4.3 Scalability Architecture
-- **Database**: Supabase connection pooling with read replicas
-- **Storage**: CDN-enabled document delivery with regional optimization
-- **Processing**: Async queue system for batch OCR processing
-- **Monitoring**: Real-time performance dashboards and alerting
-
----
-
-## 5. Data Model (Insurance-Optimized)
+## Data Models
 
 ```sql
--- Core Tables with RLS
-CREATE TABLE employees (
+-- Core document storage
+CREATE TABLE documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id),
-  name TEXT NOT NULL,
-  role TEXT NOT NULL,
-  salary NUMERIC(10,2),
-  due_date DATE,
-  province TEXT CHECK (province IN ('QC', 'ON')),
-  benefits JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-CREATE TABLE document_uploads (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  employee_id UUID REFERENCES employees(id),
+  filename TEXT NOT NULL,
   file_path TEXT NOT NULL,
   file_size INTEGER,
   mime_type TEXT,
-  processing_status TEXT CHECK (processing_status IN ('uploaded', 'processing', 'completed', 'failed')),
-  mistral_job_id TEXT,
+  status TEXT CHECK (status IN ('uploading', 'processing', 'completed', 'failed')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE extracted_insurance_data (
+-- OCR processing results
+CREATE TABLE ocr_results (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  document_id UUID REFERENCES document_uploads(id),
-  insurer_name TEXT,
-  policy_number TEXT,
-  coverage_amount NUMERIC(12,2),
-  effective_date DATE,
-  expiry_date DATE,
+  document_id UUID REFERENCES documents(id),
+  extracted_text TEXT,
   confidence_score NUMERIC(3,2),
-  raw_mistral_output JSONB,
-  extraction_metadata JSONB,
+  processing_time_ms INTEGER,
+  raw_mistral_response JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE generated_policies (
+-- User activity tracking
+CREATE TABLE download_history (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  employee_id UUID REFERENCES employees(id),
-  document_id UUID REFERENCES document_uploads(id),
-  province TEXT NOT NULL,
-  policy_content TEXT,
-  generation_parameters JSONB,
+  user_id UUID REFERENCES auth.users(id),
+  document_id UUID REFERENCES documents(id),
+  download_type TEXT CHECK (download_type IN ('txt', 'json', 'copy')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
--- Row Level Security Policies
-ALTER TABLE employees ENABLE ROW LEVEL SECURITY;
-ALTER TABLE document_uploads ENABLE ROW LEVEL SECURITY;
-ALTER TABLE extracted_insurance_data ENABLE ROW LEVEL SECURITY;
-ALTER TABLE generated_policies ENABLE ROW LEVEL SECURITY;
-
--- Employee access policies
-CREATE POLICY "employees_own_access" ON employees
-  FOR ALL USING (auth.uid() = user_id);
-
--- Document access policies  
-CREATE POLICY "documents_employee_access" ON document_uploads
-  FOR ALL USING (
-    employee_id IN (
-      SELECT id FROM employees WHERE user_id = auth.uid()
-    )
-  );
 ```
 
----
+## APIs and Integrations
 
-## 6. Implementation Timeline (Risk-Adjusted)
+### Internal API Endpoints
+- `POST /api/upload` - File upload with storage and database persistence
+- `POST /api/process-document` - Trigger OCR processing workflow
+- `GET /api/results/[id]` - Retrieve OCR results and metadata
+- `GET /api/history` - User's document processing history
+- `DELETE /api/documents/[id]` - Remove document and associated data
 
-### Phase 1: Foundation (4 days)
-- **Day 1-2**: v0 UI component generation and Supabase schema setup
-- **Day 3-4**: Mistral OCR service integration and basic upload flow
+### External Integration
+- **Mistral OCR API**: RESTful integration for document processing
+- **Supabase APIs**: Database operations and file storage management
+- **Vercel APIs**: Deployment and monitoring integration
 
-**Deliverables**: Working upload → OCR → display pipeline
+## Infrastructure Requirements
 
-### Phase 2: Core Processing (5 days)
-- **Day 5-7**: Employee portal with authentication and document processing
-- **Day 8-9**: HR dashboard MVP with policy generation
-**Deliverables**: End-to-end employee and HR workflows
+### Development Environment
+- Node.js 18+ for Next.js compatibility
+- Supabase CLI for local database development
+- Mistral API key for OCR functionality
+- Git repository with CI/CD pipeline
 
-### Phase 3: Business Logic (4 days)
-- **Day 10-11**: Provincial rule engine implementation
-- **Day 12-13**: Data validation and error handling
-**Deliverables**: Production-ready business logic
+### Production Environment
+- Vercel Pro account for enterprise features
+- Supabase Pro for production database and storage
+- Custom domain with SSL certificate
+- Monitoring and analytics integration
 
-### Phase 4: Polish & Production (3 days)
-- **Day 14-15**: Security hardening, performance optimization
-- **Day 16**: Demo preparation and documentation
-**Deliverables**: Client-ready demonstration
+# Development Roadmap  
 
-**Total Timeline**: 16 development days (3.5 weeks) - 20% buffer added for risk mitigation
+## Phase 1: Foundation Infrastructure ✅ (Mostly Complete)
+**Scope**: Core application structure and authentication
+**Deliverables**:
+- ✅ Next.js 14 application with TypeScript setup
+- ✅ shadcn/ui component library implementation
+- ✅ Basic routing and navigation structure
+- ✅ Responsive layout with dark theme support
+- ⏳ Supabase authentication integration (UI complete, backend pending)
+- ⏳ User authentication middleware and route protection
 
----
+## Phase 2: File Management System 🔄 (In Progress)
+**Scope**: Document upload, storage, and basic management
+**Deliverables**:
+- ✅ Drag-and-drop file upload component with progress tracking
+- ✅ File validation UI (type, size limits)
+- ⏳ Supabase Storage bucket configuration with security policies
+- ⏳ Document database schema and automatic record creation
+- ⏳ Basic file listing and management interface
+- ⏳ Error handling for upload failures
 
-## 7. Success Metrics & Acceptance Criteria
+## Phase 3: OCR Processing Core ⏳ (Pending)
+**Scope**: Mistral OCR integration and processing pipeline
+**Deliverables**:
+- ⏳ Mistral OCR API service integration
+- ⏳ Async processing workflow with status tracking
+- ⏳ Real-time progress updates during OCR processing
+- ⏳ OCR results database schema and persistence
+- ⏳ Processing error handling and retry logic
+- ⏳ Confidence scoring and metadata extraction
 
-### 7.1 Technical Acceptance Criteria
-- [ ] Document upload succeeds with progress indication
-- [ ] Mistral OCR processes documents with >95% field extraction accuracy
-- [ ] Provincial policy generation includes correct leave duration calculations
-- [ ] All user interfaces render properly on mobile and desktop
-- [ ] Authentication and authorization work correctly for all user roles
-- [ ] Processing completes within 30-second SLA for typical documents
+## Phase 4: Results Display & Export ⏳ (Pending)
+**Scope**: Professional results presentation and data export
+**Deliverables**:
+- ✅ OCR results display component UI (with mock data)
+- ⏳ Confidence score visualization
+- ⏳ Text search and highlight functionality within results
+- ⏳ TXT file export with formatting preservation
+- ⏳ JSON export with structured data and metadata
+- ⏳ Copy-to-clipboard functionality with user feedback
 
-### 7.2 Business Success Metrics
-- [ ] Client approves technical demonstration quality
-- [ ] Processing cost remains under $10/month for 1000 documents
-- [ ] Zero security vulnerabilities in penetration testing
-- [ ] 90%+ user satisfaction in usability testing
-- [ ] Documentation enables independent client operation
+## Phase 5: History & Document Management ⏳ (Pending)
+**Scope**: Complete document lifecycle management
+**Deliverables**:
+- ⏳ Processing history page with filtering and search
+- ⏳ Document re-access and result re-download capabilities
+- ⏳ User activity tracking and download history
+- ⏳ Document deletion with cascade cleanup
+- ⏳ Batch operations for document management
+- ⏳ Usage statistics and processing analytics
 
-### 7.3 MVP Demo Requirements
-- [ ] Live demonstration of complete employee workflow
-- [ ] HR manager dashboard with policy generation
-- [ ] Real document processing (not mock data)
-- [ ] Performance under load simulation
-- [ ] Security and compliance overview presentation
+## Phase 6: Production Readiness & Polish ⏳ (Pending)
+**Scope**: Enterprise-grade features and demo preparation
+**Deliverables**:
+- ⏳ Performance optimization and caching strategies
+- ⏳ Security hardening and vulnerability assessment
+- ⏳ Comprehensive error handling and user feedback
+- ⏳ Loading states and skeleton screens for better UX
+- ⏳ Mobile responsiveness optimization
+- ⏳ Demo preparation with sample documents and use cases
 
----
+## Phase 7: Customization Framework 🔮 (Post-MVP)
+**Scope**: Foundation for client-specific customizations
+**Deliverables**:
+- 🔮 Plugin architecture for industry-specific modules
+- 🔮 Configuration management for client customizations
+- 🔮 API endpoints for third-party integrations
+- 🔮 White-label theming and branding capabilities
+- 🔮 Advanced user role management
+- 🔮 Compliance and audit trail enhancements
 
-## 8. Risk Assessment & Mitigation Strategies
+# Logical Dependency Chain
 
-### 8.1 Technical Risks
+## Foundation Layer (Build First) ✅
+**Critical Path**: Authentication → Database → UI Components
+1. **Next.js Application Setup** ✅ - Required for all subsequent development
+2. **Supabase Integration** ⏳ - Database and auth foundation for all features
+3. **shadcn/ui Implementation** ✅ - UI component library for consistent interface
+4. **Authentication System** ⏳ - User management required for data isolation
+5. **Basic Navigation** ✅ - Routing structure needed for feature integration
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|---------|-------------------|
-| Mistral OCR accuracy below target | Medium | High | Implement confidence thresholds and manual review fallback |
-| v0 component limitations | Low | Medium | Maintain custom component library as backup |
-| Supabase performance issues | Low | High | Implement database optimization and monitoring |
-| Timeline compression | High | Medium | Prioritize MVP features, defer advanced functionality |
+## Core Functionality Layer (Minimum Viable Demo)
+**Critical Path**: Upload → Storage → Processing → Display
+6. **File Upload Component** ✅ - Entry point for user workflow
+7. **Supabase Storage Integration** ⏳ - File persistence, depends on auth
+8. **Document Database Schema** ⏳ - Data structure for file tracking
+9. **Mistral OCR Service** ⏳ - Core processing capability
+10. **Processing API Endpoints** ⏳ - Connects upload to OCR
 
-### 8.2 Business Risks
+## User Experience Layer (Demo Polish)
+**Critical Path**: Results → Export → History
+11. **Results Display Component** 🔄 - Shows processed data
+12. **Export Functionality** ⏳ - Data output capabilities
+13. **Processing History** ⏳ - Document management
+14. **Error Handling & UX Polish** ⏳ - Professional finish
 
-| Risk | Probability | Impact | Mitigation Strategy |
-|------|-------------|---------|-------------------|
-| Client requirement changes | Medium | High | Maintain detailed change request process |
-| Competitive solution emergence | Low | Medium | Focus on unique Canadian compliance features |
-| Scaling cost projections | Medium | Medium | Implement cost monitoring and alerting |
+## Atomic Feature Scoping Strategy
 
----
+### Each Feature Must Be:
+- **Self-contained**: Can be developed and tested independently
+- **Incrementally valuable**: Adds visible functionality that can be demonstrated
+- **Foundation-building**: Enables subsequent features without refactoring
+- **Client-demonstrable**: Shows clear business value during sales presentations
 
-## 9. Post-MVP Roadmap & Scaling Strategy
+### Progressive Enhancement Approach:
+- **Week 1**: Working upload with mock processing (shows UI quality)
+- **Week 2**: Real OCR processing with basic results (proves core functionality)
+- **Week 3**: Professional results display with export (demonstrates completeness)
+- **Week 4**: History and management features (shows enterprise readiness)
 
-### 9.1 Phase 2 Enhancements (Month 2-3)
-- Advanced analytics dashboard
-- Batch processing capabilities
-- Multi-tenant architecture
-- API for third-party integrations
+# Risks and Mitigations  
 
-### 9.2 Enterprise Features (Month 4-6)
-- White-label customization
-- Advanced workflow automation
-- Integration with HR systems (Workday, BambooHR)
-- Compliance reporting and audit tools
+## Technical Challenges
 
-### 9.3 Market Expansion (Month 6+)
-- Additional provincial support (BC, AB, etc.)
-- Other document types (T4s, employment contracts)
-- AI-powered policy recommendations
-- Predictive analytics for leave planning
+### Risk: Mistral OCR Integration Complexity
+**Impact**: Core functionality depends on external API working correctly
+**Mitigation**:
+- Test Mistral OCR with sample documents immediately
+- Implement comprehensive error handling and retry logic
+- Have fallback processing options ready
+- Create mock service for development continuity
 
----
+### Risk: File Upload and Storage Performance
+**Impact**: Poor user experience with large files or slow uploads
+**Mitigation**:
+- Implement chunked upload for large files
+- Add upload progress indicators and cancellation
+- Set reasonable file size limits (50MB max)
+- Use Supabase Storage CDN for optimal performance
 
-## 10. Open Questions for Client Alignment
+### Risk: Real-time Processing Status Updates
+**Impact**: Users don't know processing status, leading to poor UX
+**Mitigation**:
+- Implement WebSocket or Server-Sent Events for live updates
+- Have polling fallback for connection issues
+- Clear loading states and estimated time indicators
+- Graceful handling of processing timeouts
 
-1. **Sample Documents**: Can MANELA provide 10-15 representative insurance documents for testing and training?
-2. **Branding Guidelines**: What are the specific color palette, logo, and brand requirements?
-3. **Compliance Requirements**: Are there specific PIPEDA or provincial privacy requirements beyond standard practices?
-4. **Integration Scope**: What existing systems need integration consideration for Phase 2?
-5. **User Volume**: What are realistic user volumes for cost modeling and scaling?
+## MVP Scope Management
+
+### Risk: Feature Creep During Development
+**Impact**: Timeline extends, core functionality gets delayed
+**Mitigation**:
+- Strict adherence to Phase 1-4 scope for MVP
+- Document Phase 5-7 features as post-MVP only
+- Regular scope review and client expectation management
+- Focus on demonstrable core value first
+
+### Risk: Over-Engineering for Future Customizations
+**Impact**: Unnecessary complexity delays MVP delivery
+**Mitigation**:
+- Build simple, working features first
+- Refactor for extensibility only after MVP validation
+- Document customization points for future development
+- Prioritize working demo over architectural perfection
+
+## Resource and Timeline Constraints
+
+### Risk: Dependency on External Services
+**Impact**: Service outages or changes could block development
+**Mitigation**:
+- Have local development environment setup
+- Monitor service status and maintain backup plans
+- Keep API integration modular for easier swapping
+- Document all external service configurations
+
+### Risk: Insufficient Testing Before Client Demo
+**Impact**: Demo failures damage credibility and sales potential
+**Mitigation**:
+- Test with multiple document types and sizes
+- Have backup demo materials and recorded videos
+- Practice demo flow multiple times
+- Prepare for common failure scenarios
+
+# Appendix  
+
+## Research Findings
+
+### OCR Technology Analysis
+- **Mistral OCR**: 99%+ accuracy, $1/1000 pages, native multilingual support
+- **Competitive Advantage**: 30-40x cost reduction vs Google Document AI/AWS Textract
+- **Processing Speed**: Sub-30 second typical document processing
+- **File Support**: PDFs, images (PNG, JPG, TIFF) up to 50MB
+
+### Market Positioning Research
+- **B2B Software Sales Model**: Higher margins than SaaS, recurring customization revenue
+- **Industry Verticals**: Insurance, legal, healthcare, accounting show highest OCR demand
+- **Client Pain Points**: High ongoing API costs, vendor lock-in, poor accuracy on industry-specific documents
+- **Buying Criteria**: Accuracy, speed, cost predictability, customization capability
+
+## Technical Specifications
+
+### Performance Requirements
+- **Upload Speed**: Sub-5 second file upload for typical documents (<10MB)
+- **Processing Time**: <30 seconds end-to-end for standard business documents
+- **Concurrent Users**: Support 100+ simultaneous users without degradation
+- **Accuracy Target**: ≥95% text extraction accuracy on clean documents
+
+### Security Specifications
+- **Data Encryption**: AES-256 at rest, TLS 1.3 in transit
+- **Access Control**: Row Level Security with user isolation
+- **File Storage**: Private buckets with signed URL access
+- **Audit Trail**: Complete user action logging for compliance
+
+### Integration Specifications
+```typescript
+// Mistral OCR API Integration Pattern
+interface MistralOCRConfig {
+  apiKey: string;
+  model: 'mistral-ocr-latest';
+  maxRetries: 3;
+  timeoutMs: 30000;
+}
+
+interface OCRResponse {
+  text: string;
+  confidence: number;
+  metadata: {
+    pages: number;
+    language_detected: string;
+    processing_time_ms: number;
+  };
+}
+```
+
+### Deployment Specifications
+- **Environment**: Vercel Pro with custom domain
+- **Database**: Supabase Pro with connection pooling
+- **Storage**: Supabase Storage with CDN acceleration
+- **Monitoring**: Built-in Vercel Analytics + custom error tracking
+- **Backup**: Automated database backups, file storage redundancy
+
+## Implementation Status Summary
+
+### Completed Components ✅
+- Next.js application structure
+- UI component library (shadcn/ui)
+- File upload interface
+- Authentication UI
+- Processing status display
+- Extracted content viewer
+- Responsive dark theme design
+
+### In Progress 🔄
+- Supabase authentication backend
+- File storage configuration
+- Database schema implementation
+
+### Pending Implementation ⏳
+- Mistral OCR API integration
+- Real document processing
+- Export functionality
+- Processing history
+- User management
+- Production deployment
+
+### Documentation Available 📄
+- `SUPABASE_SETUP.md` - Complete auth integration guide
+- `ai-docs/add-mistral-ocr.md` - Detailed OCR implementation plan
+- `docs/password-strength-meter.md` - Security feature documentation
