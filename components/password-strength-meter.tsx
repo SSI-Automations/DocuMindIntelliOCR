@@ -101,7 +101,7 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
   if (!password) return null
 
   return (
-    <div className="space-y-2 mt-2">
+    <div className="space-y-2 mt-2" data-testid="password-strength-meter">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">Password Strength</span>
         <span className={`text-sm font-medium ${
