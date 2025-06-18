@@ -9,27 +9,29 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { PasswordStrengthMeter } from "@/components/password-strength-meter"
 
 interface AuthFormProps {
   type: "login" | "signup"
+  loginAction: (formData: FormData) => Promise<void>
+  signupAction: (formData: FormData) => Promise<void>
 }
 
-export default function AuthForm({ type }: AuthFormProps) {
-  const [email, setEmail] = useState("")
+export default function AuthForm({ type, loginAction, signupAction }: AuthFormProps) {
   const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const [pending, setPending] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    // Simulate authentication
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/")
-    }, 1500)
+  const handleSubmit = async (formData: FormData) => {
+    setPending(true)
+    try {
+      if (type === "login") {
+        await loginAction(formData)
+      } else {
+        await signupAction(formData)
+      }
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -42,17 +44,16 @@ export default function AuthForm({ type }: AuthFormProps) {
             : "Enter your information to create an account"}
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
+      <form action={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="name@example.com"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="space-y-2">
@@ -66,11 +67,14 @@ export default function AuthForm({ type }: AuthFormProps) {
             </div>
             <Input
               id="password"
+              name="password"
               type="password"
               required
-              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {type === "signup" && (
+              <PasswordStrengthMeter password={password} />
+            )}
           </div>
 
           {type === "login" && (
@@ -83,8 +87,8 @@ export default function AuthForm({ type }: AuthFormProps) {
           )}
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending
               ? type === "login"
                 ? "Logging in..."
                 : "Creating account..."

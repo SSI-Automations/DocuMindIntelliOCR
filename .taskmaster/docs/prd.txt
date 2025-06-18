@@ -1,0 +1,414 @@
+# DocuMind IntelliOCR - Product Requirements Document
+
+## Executive Summary
+
+DocuMind IntelliOCR is an enterprise-grade intelligent document processing platform that combines high-accuracy OCR with AI-powered document intelligence. Built as a **B2B software product** (not SaaS), companies purchase licenses and receive customization for their specific industry needs. The platform not only digitizes documents but enables users to have intelligent conversations about their content through an AI assistant.
+
+**Core Value Proposition**:
+- **OCR Excellence**: 99%+ accuracy with Mistral AI at $1/1000 pages
+- **AI Intelligence**: Chat with documents using Vercel AI SDK for instant insights
+- **Memory Persistence**: Mem0 integration remembers context across conversations
+- **Enterprise Ready**: Own the software outright with no ongoing API lock-in
+- **95% Cost Reduction**: $3.75/month vs $225-$22,500/month for enterprise solutions
+
+**Target Market**: Mid-to-large enterprises in document-heavy industries:
+- Insurance companies processing claims
+- Legal firms managing case files
+- Healthcare providers digitizing patient records
+- Accounting firms processing financial documents
+- Government agencies modernizing records
+
+**Business Model**: 
+- **License Sales**: $25K-$50K (enhanced with AI capabilities)
+- **Customization Services**: $75K-$250K (industry-specific AI training)
+- **Support Contracts**: $10K-$25K annually (includes AI model updates)
+- **Optional AI Usage Fees**: For high-volume AI interactions
+
+## Current Implementation Status
+
+### ✅ Completed Features
+
+#### Foundation Infrastructure
+- **Next.js 15.2.4 + React 19**: Modern app architecture with TypeScript
+- **Complete UI Library**: 55+ shadcn/ui components with dark theme
+- **Authentication System**: Supabase Auth with secure login/signup/logout
+- **Route Protection**: Middleware-based security for protected pages
+- **Responsive Design**: Mobile-optimized professional interface
+- **Testing Infrastructure**: Playwright E2E test suite
+
+#### User Interface Components
+- **File Upload**: Drag-and-drop with progress tracking
+- **Dashboard Layout**: Professional navigation and user management
+- **Password Security**: Strength meter with validation
+- **Loading States**: Skeleton screens and progress indicators
+- **Error Handling**: User-friendly error messages and recovery
+
+### 🔄 Partially Implemented
+
+#### Document Processing UI
+- **Processing Flow**: Complete UI workflow (mock data only)
+- **Results Display**: ExtractedContent component (needs real OCR data)
+- **File Validation**: Type and size checks (missing actual processing)
+
+#### Infrastructure Setup
+- **Supabase Configuration**: Client/server setup (no production environment)
+- **API Routes**: Basic structure (missing core functionality)
+- **Database Models**: Planned schema (not yet deployed)
+
+### ❌ Not Implemented (Core Functionality)
+
+#### OCR Processing Engine
+- **Mistral OCR API Integration**: Core text extraction capability
+- **Async Processing Pipeline**: Queue management and status tracking
+- **Confidence Scoring**: Quality assessment of extracted text
+- **Multi-format Support**: PDF, PNG, JPG, TIFF processing
+
+#### Data Management
+- **Database Schema**: PostgreSQL tables for documents, results, history
+- **Storage Buckets**: Secure file storage with access control
+- **Export Functionality**: TXT/JSON download capabilities
+- **Document History**: Processing archive and re-access
+
+### 🆕 New AI Features (Not Started)
+
+#### AI Document Intelligence
+- **Vercel AI SDK Integration**: Foundation for chat capabilities
+- **Chat Interface**: Conversational UI for document Q&A
+- **Context Understanding**: AI comprehension of document content
+- **Multi-document Chat**: Query across multiple documents
+
+#### Vector Storage & Retrieval
+- **Supabase Vector Store**: pgvector for document embeddings
+- **Embedding Generation**: Convert documents to searchable vectors
+- **Semantic Search**: Find relevant content across documents
+- **Similarity Matching**: Related document suggestions
+
+#### Memory & Persistence
+- **Mem0 Integration**: Conversation memory layer
+- **Context Preservation**: Remember user preferences and history
+- **Personalized Responses**: Adapt to user's domain knowledge
+- **Session Continuity**: Resume conversations seamlessly
+
+### 🔧 Configuration Issues (Must Fix)
+
+#### Next.js Configuration
+```javascript
+// FILE: next.config.mjs
+// CURRENT (BROKEN) - Missing Turbopack setup
+const nextConfig = {
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
+  images: { unoptimized: true },
+}
+
+// REQUIRED (WORKING) - Add this configuration
+const nextConfig = {
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
+  images: { unoptimized: true },
+  turbopack: {
+    resolveAlias: {
+      react: "react",
+      "react-dom": "react-dom",
+    },
+    resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+  },
+};
+```
+
+#### Package.json Updates
+```json
+// FILE: package.json
+// CURRENT (INCORRECT)
+{
+  "name": "my-v0-project",
+  "scripts": {
+    "dev": "next dev",  // Missing --turbo flag
+    // Missing taskmaster script
+  }
+}
+
+// REQUIRED (CORRECT)
+{
+  "name": "documind-intelliocr",
+  "scripts": {
+    "dev": "next dev --turbo",
+    "taskmaster": "task-master-ai"
+  }
+}
+```
+
+## Core Features
+
+### 1. Document Upload & Storage
+**What it does**: Secure drag-and-drop file upload with automatic cloud storage
+**Why it's important**: Foundation for all document processing, ensures data security
+**Current Status**: ✅ UI complete, ❌ Storage integration pending
+**How it works**: React Dropzone → Supabase Storage → Database record → Processing queue
+
+### 2. Mistral OCR Processing
+**What it does**: High-accuracy text extraction from PDFs and images
+**Why it's important**: Core value proposition - accurate, fast, cost-effective OCR
+**Current Status**: ❌ Not implemented
+**How it works**: API integration → Async processing → Confidence scoring → Result storage
+
+### 3. AI Document Chat (NEW)
+**What it does**: Natural language conversations about document content
+**Why it's important**: Transforms static documents into interactive knowledge
+**Current Status**: 🆕 Not started
+**How it works**: Vercel AI SDK → Vector search → Context retrieval → Streaming responses
+
+### 4. Results Display & Export
+**What it does**: Professional presentation of extracted text with export options
+**Why it's important**: Enables integration with client workflows
+**Current Status**: 🔄 UI complete, needs real data
+**How it works**: Structured display → Search/highlight → Export as TXT/JSON
+
+### 5. Document History & Management
+**What it does**: Complete audit trail with re-access capabilities
+**Why it's important**: Enterprise compliance and workflow management
+**Current Status**: ❌ Not implemented
+**How it works**: Database-driven → Filtering → Batch operations → Re-processing
+
+### 6. Memory-Enhanced AI (NEW)
+**What it does**: Remembers conversation context and user preferences
+**Why it's important**: Personalized experience increases productivity
+**Current Status**: 🆕 Not started
+**How it works**: Mem0 integration → Context storage → Preference learning
+
+## Technical Architecture
+
+### Frontend Layer
+- **Framework**: Next.js 15.2.4 with App Router and React 19
+- **UI Library**: Complete shadcn/ui (55+ components) with Tailwind CSS
+- **State Management**: React Server Components + Client state
+- **Chat Interface**: Streaming UI with Vercel AI SDK (planned)
+
+### Backend Infrastructure
+- **Database**: Supabase PostgreSQL with Row Level Security
+- **Vector Store**: pgvector extension for document embeddings (planned)
+- **Authentication**: Supabase Auth with JWT tokens
+- **File Storage**: Supabase Storage with CDN
+- **API Layer**: Next.js API Routes + Server Actions
+
+### AI Processing Layer (NEW)
+- **OCR Engine**: Mistral OCR API for text extraction
+- **LLM Integration**: Vercel AI SDK with multiple model support
+- **Embedding Model**: Text embeddings for semantic search
+- **Memory Layer**: Mem0 for conversation persistence
+
+### Data Models
+
+```sql
+-- Existing document tables
+CREATE TABLE documents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  filename TEXT NOT NULL,
+  file_path TEXT NOT NULL,
+  file_size INTEGER,
+  mime_type TEXT,
+  status TEXT CHECK (status IN ('uploading', 'processing', 'completed', 'failed')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE ocr_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  document_id UUID REFERENCES documents(id),
+  extracted_text TEXT,
+  confidence_score NUMERIC(3,2),
+  processing_time_ms INTEGER,
+  raw_mistral_response JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- NEW: Vector storage for AI search
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE document_embeddings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  document_id UUID REFERENCES documents(id),
+  chunk_index INTEGER,
+  content TEXT,
+  embedding vector(1536),
+  metadata JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- NEW: Conversation history
+CREATE TABLE conversations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  document_ids UUID[],
+  title TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id UUID REFERENCES conversations(id),
+  role TEXT CHECK (role IN ('user', 'assistant', 'system')),
+  content TEXT,
+  metadata JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- NEW: User memory and preferences
+CREATE TABLE user_memory (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  memory_key TEXT,
+  memory_value JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(user_id, memory_key)
+);
+```
+
+## Development Roadmap
+
+### Phase 0: Critical Configuration Fixes (Immediate)
+**Timeline**: 1 day
+**Deliverables**:
+- ✅ Fix next.config.mjs with Turbopack configuration
+- ✅ Update package.json with correct name and scripts
+- ✅ Verify React 19 compatibility
+- ✅ Test development environment with --turbo flag
+
+### Phase 1: Supabase Production Setup (Week 1)
+**Timeline**: 2-3 days
+**Deliverables**:
+- Create production Supabase project
+- Deploy database schema (documents, results, history)
+- Configure storage buckets with security policies
+- Set up Row Level Security (RLS)
+- Test authentication flow in production
+
+### Phase 2: Mistral OCR Integration (Week 1-2)
+**Timeline**: 3-4 days
+**Deliverables**:
+- Implement Mistral OCR API service
+- Create async processing queue
+- Add real-time status updates
+- Store results with confidence scores
+- Connect upload → process → display pipeline
+- Test with various document types
+
+### Phase 3: Export & History (Week 2)
+**Timeline**: 2-3 days
+**Deliverables**:
+- Implement TXT/JSON export functionality
+- Create document history page
+- Add re-download capabilities
+- Implement document deletion
+- Track user activity
+
+### Phase 4: Vector Store Setup (Week 3)
+**Timeline**: 3-4 days
+**Deliverables**:
+- Enable pgvector in Supabase
+- Implement document chunking strategy
+- Generate embeddings for documents
+- Create vector search functions
+- Test semantic search accuracy
+
+### Phase 5: AI Chat Interface (Week 3-4)
+**Timeline**: 4-5 days
+**Deliverables**:
+- Integrate Vercel AI SDK
+- Build chat UI with shadcn components
+- Implement streaming responses
+- Connect to vector search
+- Add conversation management
+- Test multi-document querying
+
+### Phase 6: Memory Integration (Week 4)
+**Timeline**: 3-4 days
+**Deliverables**:
+- Integrate Mem0 memory layer
+- Store conversation context
+- Implement preference learning
+- Add personalization features
+- Test session continuity
+
+### Phase 7: Production Readiness (Week 5)
+**Timeline**: 3-4 days
+**Deliverables**:
+- Performance optimization
+- Security hardening
+- Error handling improvements
+- Documentation updates
+- Demo preparation
+- Client testing scenarios
+
+## Updated Business Positioning
+
+### Enhanced Value Proposition
+**From**: Simple OCR document processing
+**To**: Intelligent Document Processing Platform with AI Assistant
+
+### Pricing Model Update
+- **Base License**: $25K-$50K (increased from $10K-$25K)
+- **AI Module**: Additional $15K-$25K
+- **Customization**: $75K-$250K (industry-specific AI training)
+- **Support**: $10K-$25K/year (includes AI updates)
+
+### Competitive Advantages
+1. **Unified Platform**: OCR + AI in one solution
+2. **Memory Persistence**: Unlike ChatGPT, remembers context
+3. **Data Privacy**: On-premise option available
+4. **Cost Effective**: 95% cheaper than enterprise alternatives
+5. **Customizable**: Industry-specific training possible
+
+## Implementation Priorities
+
+### Immediate (This Week)
+1. ✅ Fix configuration issues
+2. Set up Supabase production environment
+3. Begin Mistral OCR integration
+
+### Short Term (Weeks 1-2)
+1. Complete OCR pipeline
+2. Implement export functionality
+3. Add document history
+
+### Medium Term (Weeks 3-4)
+1. Set up vector store
+2. Build AI chat interface
+3. Integrate memory layer
+
+### Long Term (Post-MVP)
+1. Industry-specific customizations
+2. Advanced AI features
+3. Enterprise integrations
+
+## Success Metrics
+
+### Technical KPIs
+- OCR accuracy: ≥99%
+- Processing speed: <30 seconds/document
+- Chat response time: <2 seconds
+- Vector search accuracy: >90% relevance
+
+### Business KPIs
+- License value: $25K-$50K average
+- Implementation time: <30 days
+- Customer satisfaction: >90%
+- ROI demonstration: <6 months
+
+## Risk Mitigation
+
+### Technical Risks
+- **AI Model Costs**: Implement usage limits and caching
+- **Vector Search Performance**: Use efficient chunking strategies
+- **Memory Scalability**: Implement memory pruning policies
+
+### Business Risks
+- **Complexity Perception**: Provide simple onboarding
+- **Integration Challenges**: Offer professional services
+- **Competitive Pressure**: Focus on unique memory features
+
+## Conclusion
+
+DocuMind IntelliOCR is evolving from a simple OCR tool to an intelligent document processing platform. The addition of AI chat capabilities and memory persistence creates a unique value proposition in the enterprise market. With the foundation already built (UI, auth, basic workflow), the focus now shifts to implementing core OCR functionality and innovative AI features that will command premium pricing in the B2B market.
