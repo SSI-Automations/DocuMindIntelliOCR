@@ -48,3 +48,8 @@ node_modules/
 
 .mcp.json
 .cursor/mcp.json
+
+# Added by Task Master AI
+# Task files
+tasks.json
+tasks/ 

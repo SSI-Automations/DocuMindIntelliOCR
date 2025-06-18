@@ -1,0 +1,808 @@
+{
+  "config": {
+    "configFile": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/playwright.config.ts",
+    "rootDir": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 600000,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 7
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.53.0",
+    "workers": 7,
+    "webServer": {
+      "command": "pnpm run dev",
+      "url": "http://localhost:3001",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "mistral-ocr/mistral-ocr-api.spec.ts",
+      "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Mistral OCR API Tests - Based on Official Docs",
+          "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+          "line": 10,
+          "column": 6,
+          "specs": [
+            {
+              "title": "basic OCR - extract text from image using pixtral-12b",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9136,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Starting OCR test with pixtral-12b model...\n"
+                        },
+                        {
+                          "text": "Test Image Path: /Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/tests/mistral-ocr/testdata/mistral-test-image.png\n"
+                        },
+                        {
+                          "text": "Reading local image file...\n"
+                        },
+                        {
+                          "text": "Calling mistral.chat.complete with vision capabilities...\n"
+                        },
+                        {
+                          "text": "\n=== CHAT RESPONSE ===\n"
+                        },
+                        {
+                          "text": "{\n  \"id\": \"5e19b6fc2b7841ab820cc81615536fae\",\n  \"object\": \"chat.completion\",\n  \"model\": \"pixtral-12b\",\n  \"usage\": {\n    \"promptTokens\": 2827,\n    \"completionTokens\": 11,\n    \"totalTokens\": 2838\n  },\n  \"created\": 1750278227,\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"content\": \"please\\nuse more\\nmistral\\nOCR\",\n        \"toolCalls\": null,\n        \"prefix\": false,\n        \"role\": \"assistant\"\n      },\n      \"finishReason\": \"stop\"\n    }\n  ]\n}\n"
+                        },
+                        {
+                          "text": "=== END RESPONSE ===\n\n"
+                        },
+                        {
+                          "text": "\n--- Extracted Text ---\n"
+                        },
+                        {
+                          "text": "Length: \u001b[33m27\u001b[39m\n"
+                        },
+                        {
+                          "text": "Preview: please\nuse more\nmistral\nOCR...\n"
+                        },
+                        {
+                          "text": "\n✅ Test passed!\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:45.906Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-91833d3f926092cfd8dc",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 31,
+              "column": 7
+            },
+            {
+              "title": "basic OCR - extract text from PDF using pixtral-12b (expect error)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 332,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Testing PDF URL (expecting error): https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf\n"
+                        },
+                        {
+                          "text": "Expected error for PDF URL: API error occurred: Status 500 Content-Type application/json Body \n{\"object\":\"error\",\"message\":\"Image, https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf, could not be loaded as a valid image.\",\"type\":\"internal_server_error\",\"param\":null,\"code\":\"1000\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:45.898Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-4ca6dd38d500dc3a9a10",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "structured data extraction from image",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3364,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Reading local image file for structured extraction...\n"
+                        },
+                        {
+                          "text": "\n--- Structured Extraction Result ---\n"
+                        },
+                        {
+                          "text": "# PLEASE USE MORE MISTRAL OCR...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:45.906Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-a99b7ac1159c03c08fe1",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 132,
+              "column": 7
+            },
+            {
+              "title": "handle invalid PDF URL gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1959,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Expected error for invalid URL: API error occurred: Status 400 Content-Type application/json Body \n{\"object\":\"error\",\"message\":\"An error happened when fetching file from url https://invalid-url-that-does-not-exist.com/document.pdf\",\"type\":\"invalid_file\",\"param\":null,\"code\":\"1901\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:45.890Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-ea5f0bf618815deed5d6",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 174,
+              "column": 7
+            },
+            {
+              "title": "basic OCR - extract text from image using pixtral-12b",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3537,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Starting OCR test with pixtral-12b model...\n"
+                        },
+                        {
+                          "text": "Test Image Path: /Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/tests/mistral-ocr/testdata/mistral-test-image.png\n"
+                        },
+                        {
+                          "text": "Reading local image file...\n"
+                        },
+                        {
+                          "text": "Calling mistral.chat.complete with vision capabilities...\n"
+                        },
+                        {
+                          "text": "\n=== CHAT RESPONSE ===\n"
+                        },
+                        {
+                          "text": "{\n  \"id\": \"eb60e46e492b47598dccaa874e44ea42\",\n  \"object\": \"chat.completion\",\n  \"model\": \"pixtral-12b\",\n  \"usage\": {\n    \"promptTokens\": 2827,\n    \"completionTokens\": 11,\n    \"totalTokens\": 2838\n  },\n  \"created\": 1750278228,\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"content\": \"please\\nuse more\\nmistral\\nOCR\",\n        \"toolCalls\": null,\n        \"prefix\": false,\n        \"role\": \"assistant\"\n      },\n      \"finishReason\": \"stop\"\n    }\n  ]\n}\n"
+                        },
+                        {
+                          "text": "=== END RESPONSE ===\n\n"
+                        },
+                        {
+                          "text": "\n--- Extracted Text ---\n"
+                        },
+                        {
+                          "text": "Length: \u001b[33m27\u001b[39m\n"
+                        },
+                        {
+                          "text": "Preview: please\nuse more\nmistral\nOCR...\n"
+                        },
+                        {
+                          "text": "\n✅ Test passed!\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:45.903Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-9086f72164623c95eb7e",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 31,
+              "column": 7
+            },
+            {
+              "title": "basic OCR - extract text from PDF using pixtral-12b (expect error)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 490,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Testing PDF URL (expecting error): https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf\n"
+                        },
+                        {
+                          "text": "Expected error for PDF URL: API error occurred: Status 500 Content-Type application/json Body \n{\"object\":\"error\",\"message\":\"Image, https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf, could not be loaded as a valid image.\",\"type\":\"internal_server_error\",\"param\":null,\"code\":\"1000\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:45.900Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-755b0acc9a47f759bc02",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "structured data extraction from image",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 4324,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Reading local image file for structured extraction...\n"
+                        },
+                        {
+                          "text": "\n--- Structured Extraction Result ---\n"
+                        },
+                        {
+                          "text": "# PLEASE USE MORE MISTRAL OCR...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:45.902Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-f1848379d338c6d48b18",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 132,
+              "column": 7
+            },
+            {
+              "title": "handle invalid PDF URL gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1835,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Expected error for invalid URL: API error occurred: Status 400 Content-Type application/json Body \n{\"object\":\"error\",\"message\":\"An error happened when fetching file from url https://invalid-url-that-does-not-exist.com/document.pdf\",\"type\":\"invalid_file\",\"param\":null,\"code\":\"1901\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:46.585Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-fd6b27978127f4dc0dca",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 174,
+              "column": 7
+            },
+            {
+              "title": "basic OCR - extract text from image using pixtral-12b",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2288,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Starting OCR test with pixtral-12b model...\n"
+                        },
+                        {
+                          "text": "Test Image Path: /Users/samisabir-idrissi/dev/ssiautomations/DocuMindIntelliOCR/tests/mistral-ocr/testdata/mistral-test-image.png\n"
+                        },
+                        {
+                          "text": "Reading local image file...\n"
+                        },
+                        {
+                          "text": "Calling mistral.chat.complete with vision capabilities...\n"
+                        },
+                        {
+                          "text": "\n=== CHAT RESPONSE ===\n"
+                        },
+                        {
+                          "text": "{\n  \"id\": \"60b5935db286423eb89e4d19d387b9ed\",\n  \"object\": \"chat.completion\",\n  \"model\": \"pixtral-12b\",\n  \"usage\": {\n    \"promptTokens\": 2827,\n    \"completionTokens\": 11,\n    \"totalTokens\": 2838\n  },\n  \"created\": 1750278228,\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"content\": \"please\\nuse more\\nmistral\\nOCR\",\n        \"toolCalls\": null,\n        \"prefix\": false,\n        \"role\": \"assistant\"\n      },\n      \"finishReason\": \"stop\"\n    }\n  ]\n}\n"
+                        },
+                        {
+                          "text": "=== END RESPONSE ===\n\n"
+                        },
+                        {
+                          "text": "\n--- Extracted Text ---\n"
+                        },
+                        {
+                          "text": "Length: \u001b[33m27\u001b[39m\n"
+                        },
+                        {
+                          "text": "Preview: please\nuse more\nmistral\nOCR...\n"
+                        },
+                        {
+                          "text": "\n✅ Test passed!\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:46.746Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-876d017bf25a008cd278",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 31,
+              "column": 7
+            },
+            {
+              "title": "basic OCR - extract text from PDF using pixtral-12b (expect error)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 286,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Testing PDF URL (expecting error): https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf\n"
+                        },
+                        {
+                          "text": "Expected error for PDF URL: API error occurred: Status 500 Content-Type application/json Body \n{\"object\":\"error\",\"message\":\"Image, https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf, could not be loaded as a valid image.\",\"type\":\"internal_server_error\",\"param\":null,\"code\":\"1000\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:48.299Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-8156b4ec6ef97a013b61",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "structured data extraction from image",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2841,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Reading local image file for structured extraction...\n"
+                        },
+                        {
+                          "text": "\n--- Structured Extraction Result ---\n"
+                        },
+                        {
+                          "text": "# PLEASE USE MORE MISTRAL OCR...\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:48.823Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-22212a32ad00d47a9dbb",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 132,
+              "column": 7
+            },
+            {
+              "title": "handle invalid PDF URL gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1824,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Key exists: \u001b[33mtrue\u001b[39m\n"
+                        },
+                        {
+                          "text": "API Key length: \u001b[33m32\u001b[39m\n"
+                        },
+                        {
+                          "text": "Mistral client initialized\n"
+                        },
+                        {
+                          "text": "Expected error for invalid URL: API error occurred: Status 400 Content-Type application/json Body \n{\"object\":\"error\",\"message\":\"An error happened when fetching file from url https://invalid-url-that-does-not-exist.com/document.pdf\",\"type\":\"invalid_file\",\"param\":null,\"code\":\"1901\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-18T20:23:48.602Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8bd3a42d80a8c75c9878-a19866f5403b887e1d53",
+              "file": "mistral-ocr/mistral-ocr-api.spec.ts",
+              "line": 174,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-06-18T20:23:42.163Z",
+    "duration": 12936.745,
+    "expected": 12,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

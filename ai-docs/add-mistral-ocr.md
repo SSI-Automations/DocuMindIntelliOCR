@@ -415,3 +415,4 @@ NEXT_PUBLIC_SUPPORTED_FORMATS=application/pdf,image/jpeg,image/png,image/tiff
 **Estimated Effort**: 1-2 weeks
 **Dependencies**: Mistral API access, API key setup
 **Assignee**: Development Team
+

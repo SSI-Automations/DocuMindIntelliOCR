@@ -1,0 +1,70 @@
+name: Mistral OCR Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'tests/mistral-ocr/**'
+      - 'lib/ocr-service.ts'
+      - 'app/api/ocr/**'
+      - '.github/workflows/ocr-tests.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'tests/mistral-ocr/**'
+      - 'lib/ocr-service.ts'
+      - 'app/api/ocr/**'
+
+env:
+  MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+    
+    - name: Install dependencies
+      run: pnpm install
+    
+    - name: Install Playwright Browsers
+      run: pnpm exec playwright install --with-deps chromium
+    
+    - name: Run OCR Tests
+      run: pnpm test tests/mistral-ocr/
+      env:
+        CI: true
+    
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report-${{ matrix.node-version }}
+        path: |
+          playwright-report/
+          test-results/
+        retention-days: 30
+    
+    - name: Upload Test Videos
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: test-videos-${{ matrix.node-version }}
+        path: test-results/**/*.webm
+        retention-days: 7
